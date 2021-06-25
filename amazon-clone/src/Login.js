@@ -1,8 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { auth } from "./firebase";
 
 function Login() {
+  const history = useHistory();
+  const [email, setEmail] = useState("");
+  const [password, setPasword] = useState("");
+
+  const signIn = (e) => {
+    e.preventDefault();
+
+    ///firebase login
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((auth) => {
+        history.push("/");
+      })
+      .catch((error) => alert(error.message));
+  };
+
+  const register = (e) => {
+    e.preventDefault();
+
+    //firebase register
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((auth) => {
+        //console.log(auth);
+        history.push("/");
+      })
+      .catch((error) => alert(error.message));
+  };
+
   return (
     <div className="login">
       <Link to="/">
@@ -16,7 +46,7 @@ function Login() {
           <h5>E-mail</h5>
           <input
             type="text"
-            /*value={email}*/
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
@@ -24,12 +54,12 @@ function Login() {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPasword(e.target.value)}
           />
 
           <button
-            type="submit"
             onClick={signIn}
+            type="submit"
             className="login__signInButton"
           >
             Sign In
